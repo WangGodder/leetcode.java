@@ -3,7 +3,9 @@ package util;
 import com.sun.istack.internal.NotNull;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 
 /**
@@ -11,6 +13,49 @@ import java.util.List;
  * @date: 2019/2/24
  */
 public class BinTreeUtils {
+
+    public static <T> List<T> bfs(TreeNode<T> root, T nullRespect) {
+        if (root == null) {
+            return new ArrayList<T>();
+        }
+        LinkedList<TreeNode<T>> queue = new LinkedList<TreeNode<T>>();
+        List<T> list = new ArrayList<T>();
+        TreeNode<T> nlast = root, last = root; // 分别表示当前行的最右节点和下一行的最右节点
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            TreeNode<T> current = queue.poll();
+            if (current == null) {
+                list.add(nullRespect);
+                continue;
+            } else {
+                list.add(current.val);
+            }
+            if (current.left == null) {
+                queue.add(null);
+            } else {
+                queue.add(current.left);
+                nlast = current.left;
+            }
+            if (current.right == null) {
+                queue.add(null);
+            } else {
+                queue.add(current.right);
+                nlast = current.right;
+            }
+
+            // 判断是否换行
+            if (current == last) {
+                last = nlast;
+            }
+        }
+        for (int i = list.size() - 1; i > 0; i--) {
+            if (!list.get(i).equals(nullRespect)) {
+                break;
+            }
+            list.remove(i);
+        }
+        return list;
+    }
 
     public static <T> List<T> TreeToList(TreeNode<T> root, T nullRespect) {
         if (root == null) {
